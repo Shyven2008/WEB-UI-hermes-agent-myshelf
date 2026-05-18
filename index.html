@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JustPost WEB UI · Hermes Agent</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="assets/logo.png" type="image/png">
+</head>
+<body>
+
+<!-- ===== LEFT NAV RAIL ===== -->
+<div class="nav-rail">
+  <div class="nav-brand" onclick="switchPage('chat')" title="JustPost">
+    <img src="assets/logo.png" alt="Hermes">
+  </div>
+  <div class="nav-brand-label">JustPost<br>WEB UI</div>
+
+  <div class="nav-icon active" data-page="chat" onclick="switchPage('chat')">
+    <span class="emoji">💬</span><span class="label">对话</span>
+  </div>
+  <div class="nav-icon" data-page="skills" onclick="switchPage('skills')">
+    <span class="emoji">🧩</span><span class="label">技能</span>
+  </div>
+  <div class="nav-icon" data-page="memory" onclick="switchPage('memory')">
+    <span class="emoji">🧠</span><span class="label">记忆</span>
+  </div>
+  <div class="nav-icon" data-page="model" onclick="switchPage('model')">
+    <span class="emoji">🤖</span><span class="label">模型</span>
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-icon" data-page="sessions" onclick="switchPage('sessions')">
+    <span class="emoji">📋</span><span class="label">会话</span>
+  </div>
+  <div class="nav-icon" data-page="files" onclick="switchPage('files')">
+    <span class="emoji">📁</span><span class="label">我的文件</span>
+  </div>
+  <div class="nav-icon" data-page="terminal" onclick="switchPage('terminal')">
+    <span class="emoji">💻</span><span class="label">终端</span>
+  </div>
+  <div class="nav-icon" data-page="usage" onclick="switchPage('usage')">
+    <span class="emoji">📊</span><span class="label">用量</span>
+  </div>
+  <div class="nav-icon" data-page="logs" onclick="switchPage('logs')">
+    <span class="emoji">📁</span><span class="label">日志</span>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-icon" data-page="trash" onclick="switchPage('trash')">
+    <span class="emoji">🗑️</span><span class="label">回收站</span>
+  </div>
+  <div class="nav-divider"></div>
+  <div class="nav-icon" data-page="wechat" onclick="switchPage('wechat')">
+    <span class="emoji">💚</span><span class="label">微信</span>
+  </div>
+</div>
+
+<!-- ===== HISTORY PANEL ===== -->
+<div class="history-panel" id="historyPanel">
+  <div class="history-header" onclick="toggleHistoryList()">
+    <h3>📋 历史记录</h3>
+    <span class="history-arrow open" id="historyArrow">▶</span>
+    <button class="new-btn" onclick="event.stopPropagation();newSession()" title="新建对话">
+      ＋<span style="font-size:11px;margin-left:3px;font-weight:400;color:var(--text2)"> 新建话题</span>
+    </button>
+  </div>
+  <div class="history-body" id="historyBody">
+    <div class="history-list" id="historyList"></div>
+    <div class="history-footer">
+      <button onclick="historyCollapse()">◀ 收起</button>
+      <button onclick="switchPage('trash')">🗑️ 回收站</button>
+    </div>
+  </div>
+</div>
+<button class="history-toggle" id="historyToggle" onclick="historyToggle()" title="展开历史">◀</button>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
+  <div class="main-topbar">
+    <div class="brand">
+      Hermes <span class="sub">JustPost</span>
+    </div>
+    <div class="right">
+      <div class="model-pill" onclick="switchPage('model')">
+        <span class="dot"></span>
+        <span class="name" id="pillModelName">DeepSeek-V4-Flash</span>
+        <span class="arrow">▼</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-container">
+
+    <!-- CHAT PAGE -->
+    <div class="page active" id="page-chat">
+      <div class="chat-container">
+        <div class="chat-notes">
+          <input id="chatNotes" placeholder="为本次对话添加备注..." oninput="saveNotes()">
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="empty-state">
+            <div class="icon">💬</div>
+            <h3>开始新的对话</h3>
+            <p>在下方输入消息，或从左侧选择已有会话</p>
+          </div>
+        </div>
+        <div class="chat-input-bar">
+          <div class="chat-input-wrap">
+            <input id="chatInput" placeholder="输入消息..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}">
+            <button id="sendBtn" onclick="sendChat()">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS PAGE -->
+    <div class="page page-pad" id="page-skills">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <h2 style="font-size:16px;font-weight:600">🧩 技能列表</h2>
+        <span id="skillCount2" style="font-size:11px;color:var(--text3);background:var(--card-bg);padding:2px 8px;border-radius:6px">0</span>
+        <div style="margin-left:auto">
+          <button class="model-card mc-action" onclick="resetSkillNames()" style="width:auto;display:inline-block;margin:0;padding:4px 12px">重置名称</button>
+        </div>
+      </div>
+      <div id="skillsContainer"></div>
+    </div>
+
+    <!-- MEMORY PAGE -->
+    <div class="page page-pad" id="page-memory">
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:12px">🧠 当前会话记忆</h2>
+      <div id="memoryContainer">
+        <div class="empty-state"><div class="icon">🧠</div><h3>无活跃对话</h3><p>请先在聊天页面开始或选择一个对话</p></div>
+      </div>
+    </div>
+
+    <!-- MODEL PAGE -->
+    <div class="page page-pad" id="page-model">
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:2px">🤖 模型选择</h2>
+      <p style="font-size:11px;color:var(--text2);margin-bottom:12px">点击卡片切换当前使用的模型</p>
+      <div class="model-grid" id="modelGrid"></div>
+    </div>
+
+    <!-- SESSIONS PAGE -->
+    <div class="page page-pad" id="page-sessions">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <h2 style="font-size:16px;font-weight:600">📋 所有会话</h2>
+        <span id="sessionsCount2" style="font-size:11px;color:var(--text3);background:var(--card-bg);padding:2px 8px;border-radius:6px">0</span>
+      </div>
+      <div id="sessionsContainer"></div>
+    </div>
+
+    <!-- FILES PAGE -->
+    <div class="page page-pad" id="page-files">
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:8px">📁 我的文件</h2>
+      <p style="font-size:11px;color:var(--text2);margin-bottom:10px">存放文档、设计图稿等文件（存储在浏览器本地）</p>
+      <div class="files-toolbar">
+        <button onclick="uploadFile()">📤 上传文件</button>
+        <button onclick="clearAllFiles()" style="border-color:rgba(239,68,68,.3);color:var(--danger)">🗑️ 清空全部</button>
+      </div>
+      <input type="file" id="fileInput" style="display:none" multiple onchange="handleFiles(this.files)">
+      <div id="filesContainer">
+        <div class="empty-state"><div class="icon">📁</div><h3>暂无文件</h3><p>点击「上传文件」选择文档、设计图稿等</p></div>
+      </div>
+    </div>
+
+    <!-- TERMINAL PAGE -->
+    <div class="page page-pad full" id="page-terminal" style="display:none;flex-direction:column">
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:6px;flex-shrink:0">💻 PowerShell 终端</h2>
+      <div class="term-box" id="termBox"><span class="pinfo">就绪 — 输入 PowerShell 命令</span></div>
+      <div class="term-input-wrap">
+        <input id="termInput" placeholder="Get-Process | Select-Object -First 5" onkeydown="if(event.key==='Enter'){event.preventDefault();runTermCmd()}">
+        <button onclick="runTermCmd()">▶ 执行</button>
+      </div>
+    </div>
+
+    <!-- USAGE PAGE -->
+    <div class="page page-pad" id="page-usage">
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:12px">📊 用量统计</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">
+        <div class="memory-card"><div class="mc-label">已安装技能</div><div class="mc-val" id="usageSkills">0</div></div>
+        <div class="memory-card"><div class="mc-label">会话总数</div><div class="mc-val" id="usageSessions">0</div></div>
+        <div class="memory-card"><div class="mc-label">当前模型</div><div class="mc-val small" id="usageModel">DeepSeek-V4-Flash</div></div>
+        <div class="memory-card"><div class="mc-label">API 状态</div><div class="mc-val" id="usageApiStatus">● 在线</div></div>
+      </div>
+    </div>
+
+    <!-- LOGS PAGE -->
+    <div class="page page-pad" id="page-logs">
+      <h2 style="font-size:16px;font-weight:600;margin-bottom:12px">📁 系统日志</h2>
+      <div id="logsContainer">
+        <div class="empty-state"><div class="icon">📁</div><h3>暂无日志</h3></div>
+      </div>
+    </div>
+
+    <!-- TRASH PAGE -->
+    <div class="page page-pad" id="page-trash">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <h2 style="font-size:16px;font-weight:600">🗑️ 回收站</h2>
+        <span id="trashCount" style="font-size:11px;color:var(--text3);background:var(--card-bg);padding:2px 8px;border-radius:6px">0</span>
+        <div style="margin-left:auto">
+          <button onclick="emptyTrash()" style="padding:5px 12px;border-radius:5px;border:1px solid var(--danger);background:rgba(239,68,68,.1);color:var(--danger);cursor:pointer;font-size:10px">清空回收站</button>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text2);margin-bottom:10px">删除的会话会进入回收站，可恢复或永久删除。不打开的会话不会读取记忆，节省算力。</p>
+      <div id="trashContainer">
+        <div class="empty-state"><div class="icon">🗑️</div><h3>回收站为空</h3></div>
+      </div>
+    </div>
+
+    <!-- WECHAT PAGE -->
+    <div class="page" id="page-wechat">
+      <div class="wechat-card">
+        <h2 style="font-size:18px;margin-top:16px">💚 微信登录</h2>
+        <p style="color:var(--text2);font-size:11px;margin:3px 0 10px">扫描二维码登录 WeChat</p>
+        <div class="qr-box" id="qrBox">
+          <div class="empty-state" style="padding:30px"><div class="icon">💚</div><h3>点击生成二维码</h3></div>
+        </div>
+        <div class="status" id="qrStatus">点击下方按钮生成二维码</div>
+        <button class="btn" onclick="generateWeChatQR()">▶ 生成二维码</button>
+        <button class="btn" onclick="pollWeChatStatus()" style="display:none" id="pollBtn">▶ 开始检测</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h3 id="modalTitle">详情</h3>
+    <pre id="modalContent"></pre>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== SCRIPTS (load order matters) ===== -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/session-store.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/history-panel.js"></script>
+<script src="js/pages.js"></script>
+<script src="js/wechat.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
