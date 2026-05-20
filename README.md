@@ -52,6 +52,8 @@ just-hermes-agent-webui/
 
 ## Changelog
 
+### v2.3.0 (2026-05-20) — Add model wizard + key modal + chat confirm
+
 ### v2.2.0 (2026-05-20) — GitHub Sync + Qwen3 Coder + Radio Select
 - Added Qwen3 Coder 480B A35B (free) model to model library via OpenRouter
 - Model cards changed to radio-button selection (single-select)
@@ -69,6 +71,8 @@ just-hermes-agent-webui/
 - [ ] Multi-language support
 
 ## Changelog
+
+### v2.3.0 (2026-05-20) — Add model wizard + key modal + chat confirm
 
 ### v2.2.0 (2026-05-20) — GitHub Sync + Qwen3 Coder + Radio Select
 - Added Qwen3 Coder 480B A35B (free) model to model library via OpenRouter
