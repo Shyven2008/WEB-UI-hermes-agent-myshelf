@@ -34,5 +34,7 @@ echo "README updated"
 # Stage, commit, push
 git add -A
 git commit -m "${NEW} — ${MSG}"
-git push origin main
+# Tag the version for history preservation
+git tag -a "${NEW}" -m "${NEW} — ${MSG}"
+git push origin main --follow-tags
 echo "=== Done: ${NEW} ==="
