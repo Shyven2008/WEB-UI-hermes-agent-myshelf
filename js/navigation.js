@@ -24,6 +24,8 @@ function switchPage(page) {
   if (page === 'logs')     { loadLogs(); }
   if (page === 'trash')    { renderTrash(); }
   if (page === 'files')    { renderFiles(); }
+  if (page === 'browser')  { bbRefresh(); }
+  if (page === 'kanban')   { kanbanRefresh(); }
 }
 
 // ESC key closes modal

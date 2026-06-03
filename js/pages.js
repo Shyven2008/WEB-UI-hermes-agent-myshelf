@@ -24,7 +24,7 @@ function resetSkillNames() {
 
 async function loadSkills() {
   try {
-    const res = await fetch(API_BASE + '/api/skills');
+    const res = await apiFetch('/v1/skills');
     const data = await res.json();
     state.skillsData = data.skills || [];
     const saved = loadSavedNames();
@@ -78,7 +78,7 @@ function renameSkill(id, newName) {
 
 async function openSkill(id) {
   try {
-    const res = await fetch(API_BASE + '/api/skills/' + encodeURIComponent(id));
+    const res = await apiFetch('/v1/skills/' + encodeURIComponent(id));
     if (!res.ok) throw new Error('Not found');
     const data = await res.json();
     document.getElementById('modalTitle').textContent = data.name || id;
@@ -95,7 +95,7 @@ async function openSkill(id) {
 
 async function loadAllSessions() {
   try {
-    const res = await fetch(API_BASE + '/api/sessions');
+    const res = await apiFetch('/api/sessions');
     const data = await res.json();
     state.sessionsData = data.sessions || [];
   } catch (e) {
@@ -123,7 +123,7 @@ function renderAllSessions() {
 async function deleteApiSession(id) {
   if (!confirm('确认删除会话 ' + id.slice(0, 12) + '?')) return;
   try {
-    const res = await fetch(API_BASE + '/api/sessions/' + encodeURIComponent(id), { method: 'DELETE' });
+    const res = await apiFetch('/api/sessions/' + encodeURIComponent(id), { method: 'DELETE' });
     const data = await res.json();
     if (data.success) { toast('已删除', 'success'); await loadAllSessions(); renderAllSessions(); }
     else toast('删除失败', 'error');

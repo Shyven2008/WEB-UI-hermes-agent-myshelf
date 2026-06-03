@@ -52,6 +52,8 @@ just-hermes-agent-webui/
 
 ## Changelog
 
+### v2.4.0 (2026-06-03) — WEB UI sync
+
 ### v2.3.0 (2026-05-20) — Add model wizard + key modal + chat confirm
 
 ### v2.2.0 (2026-05-20) — GitHub Sync + Qwen3 Coder + Radio Select
@@ -71,6 +73,8 @@ just-hermes-agent-webui/
 - [ ] Multi-language support
 
 ## Changelog
+
+### v2.4.0 (2026-06-03) — WEB UI sync
 
 ### v2.3.0 (2026-05-20) — Add model wizard + key modal + chat confirm
 

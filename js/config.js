@@ -1,8 +1,20 @@
 // ====== Config · Just Hermes Agent WEB UI ======
 // Centralized configuration and global application state
 
-// API endpoint — defaults to current origin (Gateway server)
-const API_BASE = location.origin || 'http://127.0.0.1:8642';
+// API endpoint — hardcoded to Gateway (not static file server)
+const API_BASE = 'http://127.0.0.1:8642';
+const TERMINAL_BASE = 'http://127.0.0.1:8646';
+const API_KEY  = 'hermes-dashboard-2026';
+
+// Helper: fetch with auth header for Gateway API calls
+async function apiFetch(path, opts = {}) {
+  const headers = { ...(opts.headers || {}) };
+  if (opts.body && typeof opts.body === 'string') {
+    headers['Content-Type'] = 'application/json';
+  }
+  headers['Authorization'] = 'Bearer ' + API_KEY;
+  return fetch(API_BASE + path, { ...opts, headers });
+}
 
 // localStorage keys
 const STORAGE_KEY   = 'hermes_skill_names';

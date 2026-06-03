@@ -53,7 +53,7 @@ async function sendChat() {
 
     const res = await fetch(API_BASE + '/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
       body: JSON.stringify({
         model: modelName,
         messages: [{ role: 'system', content: 'You are a helpful AI assistant. Respond concisely and in Chinese unless asked otherwise.' }, ...messages],

@@ -1,0 +1,4 @@
+// ====== Browser Automation (BB / PW) · Just Hermes Agent WEB UI ======
+var AUTH_API = 'http://127.0.0.1' + ':8647';
+
+async function bbRefresh() {
